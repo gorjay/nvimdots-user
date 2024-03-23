@@ -1,6 +1,5 @@
 local custom = {}
 
--- TODO: CANT take effect, why?
 custom["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = "BufRead",
