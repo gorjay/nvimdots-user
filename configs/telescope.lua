@@ -4,10 +4,10 @@ return {
 			path = "~/.local/share/nvim/databases/telescope_history.sqlite3",
 			limit = 100,
 		},
-        mappings = {
-            n = {
-                ["q"] = "close"
-            },
-        },
+		mappings = {
+			n = {
+				["q"] = "close"
+			},
+		},
 	},
 }
