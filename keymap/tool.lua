@@ -6,6 +6,6 @@ local map_callback = bind.map_callback
 require("keymap.helpers")
 
 return {
-	["n|<leader>fl"] = map_cu("telescope current_buffer_fuzzy_find"):with_noremap():with_silent():with_desc("find: current buffer fuzzy find"),
+	["n|<leader>fl"] = map_cu("Telescope current_buffer_fuzzy_find"):with_noremap():with_silent():with_desc("find: current buffer fuzzy find"),
 	["n|gu"] = map_cu("Telescope resume"):with_noremap():with_silent():with_desc("find: resume last find window"),
 }
