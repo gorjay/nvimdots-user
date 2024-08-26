@@ -5,16 +5,21 @@ local map_cmd = bind.map_cmd
 local map_callback = bind.map_callback
 require("keymap.helpers")
 local local_settings = require("user.local_settings")
+vim.notify = require("notify")
 
 local function openToday()
 	if local_settings["allinone_daily_path"] ~= nil then
 		vim.api.nvim_command(string.format("edit %s/%s.md", local_settings["allinone_daily_path"], os.date("%Y-%m-%d", os.time())))
+	else
+		vim.notify("local setting 'allinone_daily_path' is missing", "error")
 	end
 end
 
 local function openYesterday()
 	if local_settings["allinone_daily_path"] ~= nil then
 		vim.api.nvim_command(string.format("edit %s/%s.md", local_settings["allinone_daily_path"], os.date("%Y-%m-%d", os.time() - 24 * 60 * 60)))
+	else
+		vim.notify("local setting 'allinone_daily_path' is missing", "error")
 	end
 end
 
