@@ -11,10 +11,4 @@ custom["m4xshen/smartcolumn.nvim"] = {
 	event = "BufReadPost",
 }
 
--- FIXME: vim-sneak's semicolon doesn't work
--- custom["justinmk/vim-sneak"] = {
--- 	lazy = true,
--- 	event = "BufReadPost",
--- }
-
 return custom
