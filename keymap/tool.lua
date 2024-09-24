@@ -47,6 +47,18 @@ return {
 		:with_noremap()
 		:with_silent()
 		:with_desc("find: current buffer fuzzy find"),
+	["n|<leader>fr"] = map_cu("Telescope oldfiles")
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: fuzzy command history"),
+	["n|<leader>fb"] = map_cu("Telescope buffers")
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: fuzzy buffer"),
+	["n|<leader>fo"] = map_cu("Telescope command_history")
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: fuzzy command history"),
 	["n|gu"] = map_cu("Telescope resume"):with_noremap():with_silent():with_desc("find: resume last find window"),
 	["n|<leader>fa"] = map_callback(openAllinOne):with_noremap():with_silent():with_desc("allinone: find file"),
 	["n|<leader>at"] = map_callback(openToday)
