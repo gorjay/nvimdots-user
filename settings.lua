@@ -9,5 +9,9 @@ settings["dashboard_image"] = function()
         "[[ Hello Gorjay ]]"
     }
 end
+settings["lsp_deps"] = {
+	"ansiblels",
+	"marksman",
+}
 
 return settings
