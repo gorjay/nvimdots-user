@@ -1,9 +1,10 @@
 local settings = {}
 
 settings["use_ssh"] = true
-settings["use_copilot"] = false
-settings["transparent_background"] = true
-settings["format_on_save"] = false
+settings["use_copilot"] = true
+settings["transparent_background"] = false
+settings["format_modifications_only"] = true
+settings["format_on_save"] = true
 settings["dashboard_image"] = function()
     return {
         "[[ Hello Gorjay ]]"
