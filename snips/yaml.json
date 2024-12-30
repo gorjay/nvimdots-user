@@ -1,0 +1,142 @@
+{
+	"Artifactory Generic Download": {
+		"prefix": "artifactoryGenericDownload",
+		"body": [
+			"- task: ArtifactoryGenericDownload@3",
+			"\tdisplayName: Download Depencies From Artifactory",
+			"\tinputs:",
+			"\t\tconnection: '${1:pkg@staging}'",
+			"\t\tspecSource: 'taskConfiguration'",
+			"\t\tfileSpec: |",
+			"\t\t\t{",
+			"\t\t\t\t\"files\": [",
+			"\t\t\t\t\t{",
+			"\t\t\t\t\t\t\"pattern\": \"${2:global-staging-generic-virtual/kuka/YOUR_ARTIFACT}\",",
+			"\t\t\t\t\t\t\"target\": \"$(Agent.TempDirectory)\",",
+			"\t\t\t\t\t}",
+			"\t\t\t\t]",
+			"\t\t\t}",
+			"\t\tcollectBuildInfo: true",
+			"\t\tbuildName: '$(Build.DefinitionName)'",
+			"\t\tbuildNumber: '$(Build.BuildNumber)'",
+			"\t\tfailNoOp: true"
+		]
+	},
+	"Artifactory Generic Upload": {
+		"prefix": "artifactoryGenericUpload",
+		"body": [
+			"- task: ArtifactoryGenericUpload@2",
+			"\tdisplayName: Upload to Artifactory",
+			"\tinputs:",
+			"\t\tartifactoryService: '${1:pkg@staging}'",
+			"\t\tspecSource: 'taskConfiguration'",
+			"\t\tfileSpec: >",
+			"\t\t\t{",
+			"\t\t\t\t\"files\": [",
+			"\t\t\t\t\t{",
+			"\t\t\t\t\t\t\"pattern\": \"${2:$(Build.ArtifactStagingDirectory)/*.zip}\",",
+			"\t\t\t\t\t\t\"target\": \"${3:kuka-staging-generic-local/YOUR_PATH}\"",
+			"\t\t\t\t\t}",
+			"\t\t\t\t]",
+			"\t\t\t}",
+			"\t\tfailNoOp: true"
+		]
+	},
+	"Docker login": {
+		"prefix": "dockerLogin",
+		"body": [
+			"- task: Docker@2",
+			"\tdisplayName: \"Docker login\"",
+			"\t\tinputs:",
+			"\t\tcontainerRegistry: \"${1:pkg-docker@staging}\"",
+			"\t\tcommand: \"login\""
+		]
+	},
+	"Docker build task": {
+		"prefix": "dockerBuild",
+		"body": [
+			"- task: Docker@2",
+			"\tdisplayName: \"Docker build\"",
+			"\tinputs:",
+			"\t\tcontainerRegistry: \"${0:pkg-docker@staging}\"",
+			"\t\tcommand: \"build\"",
+			"\t\ttags: \"${1:latest}\"",
+			"\t\targuments: ${2:-t YOUR_IMAGE}",
+			"\t\tDockerfile: 'Dockerfile'"
+		]
+	},
+	"Docker build script": {
+		"prefix": "dockerBuild",
+		"body": [
+			"- script:",
+			"\t\tdocker build",
+			"\t\t\t--network=host",
+			"\t\t\t--platform=linux/amd64",
+			"\t\t\t-t ${1:$(DockerImage)}",
+			"\t\t\t-f ${2:Dockerfile}",
+			"\t\t\t.",
+			"\tdisplayName: Docker build"
+		]
+	},
+	"Docker run": {
+		"prefix": "dockerRun",
+		"body": [
+			"- script:",
+			"\t\tdocker run",
+			"\t\t\t--rm",
+			"\t\t\t--network=host",
+			"\t\t\t--platform=linux/amd64",
+			"\t\t\t-v $(Build.SourcesDirectory):/app",
+			"\t\t\t-v $(Build.ArtifactStagingDirectory):/artifact",
+			"\t\t\t--workdir /app",
+			"\t\t\t${1:$(DockerImage)}",
+			"\t\t\t${2:YOUR_COMMAND}",
+			"\tdisplayName: Docker run"
+		]
+	},
+	"Docker exec": {
+		"prefix": "dockerExec",
+		"body": [
+			"- script: docker exec --workdir /app ${1:$(DockerImage)} ${2:YOUR_COMMAND}",
+			"\tdisplayName: ${3:Docker exec}"
+		]
+	},
+	"Docker remove": {
+		"prefix": "dockerRm",
+		"body": [
+			"- script: docker rm --force ${1:$(DockerImage)}",
+			"\tdisplayName: Stop and remove container",
+			"\tcondition: always()"
+		]
+	},
+	"Publish Build Artifacts": {
+		"prefix": "publishBuildArtifacts",
+		"body": [
+			"- task: PublishBuildArtifacts@1",
+			"\tdisplayName: \"Publish Artifact: $(Build.Repository.Name)\"",
+			"\tinputs:",
+			"\t\tPathToPublish: ${1:$(Build.ArtifactStagingDirectory)}",
+			"\t\tArtifactName: $(Build.Repository.Name)"
+		]
+	},
+	"Debug Condition": {
+		"prefix": "debug",
+		"body": "condition: or(variables['system.debug'], variables['queue.debug'], variables['agent.diagnostic'])"
+	},
+	"Debug Task": {
+		"prefix": "script debug",
+		"body": [
+			"- script: ${1:YOUR SCRIPT}",
+			"\tdisplayName: 'DEBUG: ${2:DISPLAY NAME}'",
+			"\tcondition: or(variables['system.debug'], variables['queue.debug'], variables['agent.diagnostic'])"
+		]
+	},
+	"Set Variable": {
+		"prefix": "setvar",
+		"body": [
+			"- bash: |",
+			"\t\techo \"##vso[task.setvariable variable=${1:VARNAME}]${2:VALUE}\"",
+			"\tdisplayName: 'Create variable ${1:VARNAME}'"
+		]
+	}
+}

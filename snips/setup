@@ -1,0 +1,6 @@
+#!/bin/sh -e
+patch_file=$(realpath "snips-package-json.patch")
+
+cd ../../..
+git apply ${patch_file}
+echo "ok"

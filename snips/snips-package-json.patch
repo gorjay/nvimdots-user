@@ -1,0 +1,18 @@
+diff --git a/snips/package.json b/snips/package.json
+index 8ff8b63..6676966 100644
+--- a/snips/package.json
++++ b/snips/package.json
+@@ -264,6 +264,13 @@
+       {
+         "language": "gdscript",
+         "path": "./snippets/gdscript.json"
++      },
++      {
++        "language": [
++          "yaml",
++          "yml"
++        ],
++        "path": "../lua/user/snips/yaml.json"
+       }
+     ]
+   }
