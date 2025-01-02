@@ -1,142 +1,173 @@
 {
-	"Artifactory Generic Download": {
-		"prefix": "artifactoryGenericDownload",
+	"Azure string parameter": {
+		"prefix": "name: string",
 		"body": [
-			"- task: ArtifactoryGenericDownload@3",
-			"\tdisplayName: Download Depencies From Artifactory",
-			"\tinputs:",
-			"\t\tconnection: '${1:pkg@staging}'",
-			"\t\tspecSource: 'taskConfiguration'",
-			"\t\tfileSpec: |",
-			"\t\t\t{",
-			"\t\t\t\t\"files\": [",
-			"\t\t\t\t\t{",
-			"\t\t\t\t\t\t\"pattern\": \"${2:global-staging-generic-virtual/kuka/YOUR_ARTIFACT}\",",
-			"\t\t\t\t\t\t\"target\": \"$(Agent.TempDirectory)\",",
-			"\t\t\t\t\t}",
-			"\t\t\t\t]",
-			"\t\t\t}",
-			"\t\tcollectBuildInfo: true",
-			"\t\tbuildName: '$(Build.DefinitionName)'",
-			"\t\tbuildNumber: '$(Build.BuildNumber)'",
-			"\t\tfailNoOp: true"
+			"name: ${1:FOO}",
+			"  displayName: ${2:WHAT IS FOO}",
+			"  type: string",
+			"  default: ${3:DEFAULT STRING}"
 		]
 	},
-	"Artifactory Generic Upload": {
-		"prefix": "artifactoryGenericUpload",
+	"Azure string parameter with options": {
+		"prefix": "name: stringWithOptions",
 		"body": [
-			"- task: ArtifactoryGenericUpload@2",
-			"\tdisplayName: Upload to Artifactory",
-			"\tinputs:",
-			"\t\tartifactoryService: '${1:pkg@staging}'",
-			"\t\tspecSource: 'taskConfiguration'",
-			"\t\tfileSpec: >",
-			"\t\t\t{",
-			"\t\t\t\t\"files\": [",
-			"\t\t\t\t\t{",
-			"\t\t\t\t\t\t\"pattern\": \"${2:$(Build.ArtifactStagingDirectory)/*.zip}\",",
-			"\t\t\t\t\t\t\"target\": \"${3:kuka-staging-generic-local/YOUR_PATH}\"",
-			"\t\t\t\t\t}",
-			"\t\t\t\t]",
-			"\t\t\t}",
-			"\t\tfailNoOp: true"
+			"name: ${1:FOO}",
+			"  displayName: ${2:WHAT IS FOO}",
+			"  type: string",
+			"  default: ${3:DEFAULT STRING}",
+			"  values:",
+			"    - ${4:OPTION1}",
+			"    - ${5:OPTION2}"
 		]
 	},
-	"Docker login": {
-		"prefix": "dockerLogin",
+	"Azure boolean parameter": {
+		"prefix": "name: boolean",
 		"body": [
-			"- task: Docker@2",
-			"\tdisplayName: \"Docker login\"",
-			"\t\tinputs:",
-			"\t\tcontainerRegistry: \"${1:pkg-docker@staging}\"",
-			"\t\tcommand: \"login\""
+			"name: ${1:FOO}",
+			"  displayName: ${2:WHAT IS FOO}",
+			"  type: boolean",
+			"  default: ${3:DEFAULT BOOL}"
 		]
 	},
-	"Docker build task": {
-		"prefix": "dockerBuild",
+	"Azure Artifactory Generic Download": {
+		"prefix": "task: artifactoryGenericDownload",
 		"body": [
-			"- task: Docker@2",
-			"\tdisplayName: \"Docker build\"",
-			"\tinputs:",
-			"\t\tcontainerRegistry: \"${0:pkg-docker@staging}\"",
-			"\t\tcommand: \"build\"",
-			"\t\ttags: \"${1:latest}\"",
-			"\t\targuments: ${2:-t YOUR_IMAGE}",
-			"\t\tDockerfile: 'Dockerfile'"
+			"task: ArtifactoryGenericDownload@3",
+			"  inputs:",
+			"    connection: '${1:pkg@staging}'",
+			"    specSource: 'taskConfiguration'",
+			"    fileSpec: |",
+			"      {",
+			"        \"files\": [",
+			"          {",
+			"            \"pattern\": \"${2:global-staging-generic-virtual/kuka/YOUR_ARTIFACT}\",",
+			"            \"target\": \"$(Agent.TempDirectory)\",",
+			"          }",
+			"        ]",
+			"      }",
+			"    collectBuildInfo: true",
+			"    buildName: '$(Build.DefinitionName)'",
+			"    buildNumber: '$(Build.BuildNumber)'",
+			"    failNoOp: true",
+			"  displayName: Download Depencies From Artifactory"
 		]
 	},
-	"Docker build script": {
-		"prefix": "dockerBuild",
+	"Azure Artifactory Generic Upload": {
+		"prefix": "task: artifactoryGenericUpload",
 		"body": [
-			"- script:",
-			"\t\tdocker build",
-			"\t\t\t--network=host",
-			"\t\t\t--platform=linux/amd64",
-			"\t\t\t-t ${1:$(DockerImage)}",
-			"\t\t\t-f ${2:Dockerfile}",
-			"\t\t\t.",
-			"\tdisplayName: Docker build"
+			"task: ArtifactoryGenericUpload@2",
+			"  inputs:",
+			"    artifactoryService: '${1:pkg@staging}'",
+			"    specSource: 'taskConfiguration'",
+			"    fileSpec: >",
+			"      {",
+			"        \"files\": [",
+			"          {",
+			"            \"pattern\": \"${2:$(Build.ArtifactStagingDirectory)/*.zip}\",",
+			"            \"target\": \"${3:kuka-staging-generic-local/YOUR_PATH}\"",
+			"          }",
+			"        ]",
+			"      }",
+			"    failNoOp: true",
+			"  displayName: Upload to Artifactory"
 		]
 	},
-	"Docker run": {
-		"prefix": "dockerRun",
+	"Azure Docker login": {
+		"prefix": "task: dockerLogin",
 		"body": [
-			"- script:",
-			"\t\tdocker run",
-			"\t\t\t--rm",
-			"\t\t\t--network=host",
-			"\t\t\t--platform=linux/amd64",
-			"\t\t\t-v $(Build.SourcesDirectory):/app",
-			"\t\t\t-v $(Build.ArtifactStagingDirectory):/artifact",
-			"\t\t\t--workdir /app",
-			"\t\t\t${1:$(DockerImage)}",
-			"\t\t\t${2:YOUR_COMMAND}",
-			"\tdisplayName: Docker run"
+			"task: Docker@2",
+			"  inputs:",
+			"    containerRegistry: \"${1:pkg-docker@staging}\"",
+			"    command: \"login\"",
+			"  displayName: \"Docker login\""
 		]
 	},
-	"Docker exec": {
-		"prefix": "dockerExec",
+	"Azure Docker build task": {
+		"prefix": "task: dockerBuild",
 		"body": [
-			"- script: docker exec --workdir /app ${1:$(DockerImage)} ${2:YOUR_COMMAND}",
-			"\tdisplayName: ${3:Docker exec}"
+			"task: Docker@2",
+			"  inputs:",
+			"    containerRegistry: \"${0:pkg-docker@staging}\"",
+			"    command: \"build\"",
+			"    tags: \"${1:latest}\"",
+			"    arguments: ${2:-t YOUR_IMAGE}",
+			"    Dockerfile: 'Dockerfile'",
+			"  displayName: \"Docker build\""
 		]
 	},
-	"Docker remove": {
-		"prefix": "dockerRm",
+	"Azure Docker build script": {
+		"prefix": "script: dockerBuild",
 		"body": [
-			"- script: docker rm --force ${1:$(DockerImage)}",
-			"\tdisplayName: Stop and remove container",
-			"\tcondition: always()"
+			"script: |",
+			"    docker build \\",
+			"      --network=host \\",
+			"      --platform=linux/amd64 \\",
+			"      -t ${1:DOCKER_IMAGE_NAME} \\",
+			"      -f ${2:Dockerfile} \\",
+			"      .",
+			"  displayName: Docker build"
 		]
 	},
-	"Publish Build Artifacts": {
-		"prefix": "publishBuildArtifacts",
+	"Azure Docker run": {
+		"prefix": "script: dockerRun",
 		"body": [
-			"- task: PublishBuildArtifacts@1",
-			"\tdisplayName: \"Publish Artifact: $(Build.Repository.Name)\"",
-			"\tinputs:",
-			"\t\tPathToPublish: ${1:$(Build.ArtifactStagingDirectory)}",
-			"\t\tArtifactName: $(Build.Repository.Name)"
+			"script: |",
+			"  docker run \\",
+			"    --rm \\",
+			"    --network=host \\",
+			"    --platform=linux/amd64 \\",
+			"    -v $(Build.SourcesDirectory):/workspaces/$(Build.Repository.Name) \\",
+			"    -v $(Build.ArtifactStagingDirectory):/artifact \\",
+			"    --workdir /workspaces/$(Build.Repository.Name) \\",
+			"    ${1:DOCKER_IMAGE_NAME} \\",
+			"    ${2:YOUR_COMMAND} \\",
+			"  displayName: Docker run"
 		]
 	},
-	"Debug Condition": {
-		"prefix": "debug",
+	"Azure Docker exec": {
+		"prefix": "script: dockerExec",
+		"body": [
+			"script: |",
+			"  docker exec --workdir /workspaces/$(Build.Repository.Name) ${1:DOCKER_CONTAINER_NAME} ${2:YOUR_COMMAND}",
+			"  displayName: ${3:Docker exec}"
+		]
+	},
+	"Azure Docker remove": {
+		"prefix": "script: dockerRm",
+		"body": [
+			"script: docker rm --force ${1:DOCKER_CONTAINER_NAME}",
+			"  displayName: Stop and remove container",
+			"  condition: always()"
+		]
+	},
+	"Azure Publish Build Artifacts": {
+		"prefix": "task: publishBuildArtifacts",
+		"body": [
+			"task: PublishBuildArtifacts@1",
+			"  displayName: \"Publish Artifact: $(Build.Repository.Name)\"",
+			"  inputs:",
+			"    PathToPublish: ${1:$(Build.ArtifactStagingDirectory)}",
+			"    ArtifactName: $(Build.Repository.Name)"
+		]
+	},
+	"Azure Debug Condition": {
+		"prefix": "considtion: debug",
 		"body": "condition: or(variables['system.debug'], variables['queue.debug'], variables['agent.diagnostic'])"
 	},
-	"Debug Task": {
-		"prefix": "script debug",
+	"Azure Debug Task": {
+		"prefix": "script: debug",
 		"body": [
-			"- script: ${1:YOUR SCRIPT}",
-			"\tdisplayName: 'DEBUG: ${2:DISPLAY NAME}'",
-			"\tcondition: or(variables['system.debug'], variables['queue.debug'], variables['agent.diagnostic'])"
+			"script: ${1:YOUR SCRIPT}",
+			"  displayName: 'DEBUG: ${2:DISPLAY NAME}'",
+			"  condition: or(variables['system.debug'], variables['queue.debug'], variables['agent.diagnostic'])"
 		]
 	},
-	"Set Variable": {
-		"prefix": "setvar",
+	"Azure Set Variable": {
+		"prefix": "bash: setvar",
 		"body": [
-			"- bash: |",
-			"\t\techo \"##vso[task.setvariable variable=${1:VARNAME}]${2:VALUE}\"",
-			"\tdisplayName: 'Create variable ${1:VARNAME}'"
+			"bash: |",
+			"    echo \"##vso[task.setvariable variable=${1:VARNAME}]${2:VALUE}\"",
+			"  displayName: 'Create variable ${1:VARNAME}'"
 		]
 	}
 }
